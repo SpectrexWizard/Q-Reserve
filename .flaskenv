@@ -1,0 +1,3 @@
+FLASK_APP=q_reserve
+FLASK_ENV=development
+FLASK_DEBUG=1

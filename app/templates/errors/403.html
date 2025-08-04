@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Access Forbidden - Helpdesk System{% endblock %}
+
+{% block content %}
+<div class="text-center py-16">
+    <h1 class="text-6xl font-bold text-gray-900 mb-4">403</h1>
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Access Forbidden</h2>
+    <p class="text-gray-600 mb-8">You don't have permission to access this resource.</p>
+    <a href="{{ url_for('tickets.list_tickets') }}" class="btn btn-primary">
+        Go to Tickets
+    </a>
+</div>
+{% endblock %}

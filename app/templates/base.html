@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Helpdesk System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Navigation -->
+    <nav class="navbar bg-white shadow">
+        <div class="container flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="{{ url_for('tickets.list_tickets') }}" class="text-xl font-bold text-blue-600">
+                    🎫 Helpdesk
+                </a>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                {% if session.get('user_id') %}
+                    <!-- User is logged in -->
+                    <a href="{{ url_for('tickets.list_tickets') }}" class="nav-link">Tickets</a>
+                    <a href="{{ url_for('tickets.create_ticket') }}" class="nav-link">New Ticket</a>
+                    
+                    {% if user and user.role in ['admin'] %}
+                        <a href="{{ url_for('categories.list_categories') }}" class="nav-link">Categories</a>
+                    {% endif %}
+                    
+                    <div class="relative">
+                        <span class="text-sm text-gray-600">
+                            {% if user %}
+                                {{ user.username }} ({{ user.role.replace('_', ' ').title() }})
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <form method="POST" action="{{ url_for('auth.logout') }}" class="inline">
+                        <button type="submit" class="btn btn-outline btn-sm">Logout</button>
+                    </form>
+                {% else %}
+                    <!-- User is not logged in -->
+                    <a href="{{ url_for('auth.login') }}" class="nav-link">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mt-4">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'error' if category == 'error' else 'warning' if category == 'warning' else 'info' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="container py-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-auto py-4">
+        <div class="container text-center text-sm text-gray-600">
+            <p>&copy; 2024 Helpdesk System. Built with Flask.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
